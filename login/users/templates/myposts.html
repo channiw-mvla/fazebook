@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'userProfile.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>My Posts</title>
+</head>
+<body style="overflow:hidden">
+    <div class="row mx-5 my-5">
+        <select class="form-select mb-2" onchange="window.location='/profile/'+'{{user.username}}/'+this.value">
+            <option value="myposts">My Posts</option>
+            <option value="myprofile">My Profile</option>
+            <option value="mycomments">My Comments</option>
+            <option value="likedposts">Liked Posts</option>
+        </select>
+        <div class="d-flex justify-content-end px-0">
+
+            <button class="btn btn-primary" onclick="window.location='/profile/{{user.username}}/addpost'">Create Post</button>
+        </div>
+        {% csrf_token %}
+        <div class="flex-column align-items-center myPosts" style="display:flex;overflow-y:scroll;">
+                {% for post in user.posts.all %}
+                    <div class="card mt-4 post{{post.id}}" style="width: 18rem;">
+                        <img onclick="editText(this,'{{post.id}}')" src="{{post.image.url}}" alt="">
+                        <div class="card-body pt-0 d-flex flex-column">
+                            <img class="img-fluid img-thumbnail rounded-circle" style="height:75px;width:75px; position: relative; bottom:37.5px;" src="{{post.user.profilePic.url}}" alt="">
+                            <h5 class="card-text card-title" style="position: relative; bottom:75px; left: 80px">{{post.user.username}}</h5>
+                            <h5 onclick="editText(this,'{{post.id}}')" class="card-title"style="margin-top: -75px;">{{post.title}}</h5>
+                            <p onclick="editText(this,'{{post.id}}')" class="card-text mb-1">{{post.desc}}</p>
+                            {% load static %}
+                            <button class="btn btn-danger align-self-end" onclick="deletePost('{{post.id}}',this)">Delete</button>
+                            <p class="card-text mb-0 notification{{post.id}} bg-primary" style="
+                            position: relative;
+                            top: 13px;
+                            left: 25px;
+                            padding: 0px 7px;
+                            border-radius: 50%;
+                            color: white;
+                            align-self: start;
+                            visibility: visible;
+                            ">{{post.comments.all|length}}</p>
+                            <div class="controls d-flex justify-content-between">
+                            <div class="d-flex align-items-center img-fluid img-thumbnail">
+                                <img onclick="getComments('{{post.id}}')"src="{% static 'comment.png' %}" class="commentIcon{{post.id}}" style="height: 30px;width: 30px; cursor: pointer;" alt="">
+                            </div>
+                            <div class="d-flex align-items-center img-fluid img-thumbnail">
+                                <p class="card-text mb-0 likes{{post.id}}">{{post.usersWhoLike.all|length}}</p>
+                                {% if post in user.likedPosts.all %}
+                                    <img onclick="like(this,'{{post.id}}')"style="height: 30px;width: 30px; cursor: pointer;" src="{% static 'heart2.png' %}">
+                                {% else %}
+                                    <img onclick="like(this,'{{post.id}}')" style="height: 30px;width: 30px; cursor: pointer;" src="{% static 'heart.png' %}">
+                                {% endif %}
+                            </div>
+                            </div>
+                            <div class="commentBox{{post.id}}"></div>
+                            </div>
+                    </div>
+                {% endfor %}
+            </div>
+    </div>
+        <script src="{% static 'javascript/feed.js' %}"></script>
+        <script src="{% static 'javascript/userProfile.js' %}"></script>
+</body>
+</html>

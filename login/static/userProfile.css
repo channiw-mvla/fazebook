@@ -1,0 +1,18 @@
+.likedPosts,.myPosts,.myComments{
+    height: 80vh;
+}
+.likedPosts::-webkit-scrollbar{
+    display: none;
+}
+.myPosts::-webkit-scrollbar{
+    display: none;
+}
+.myComments::-webkit-scrollbar{
+    display: none;
+}
+html::-webkit-scrollbar{
+    display: none;
+}
+.noscroll::-webkit-scrollbar{
+    display: none;
+}
